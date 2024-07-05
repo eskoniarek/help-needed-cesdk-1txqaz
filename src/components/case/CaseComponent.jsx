@@ -78,10 +78,11 @@ const CaseComponent = () => {
       <div style={cesdkWrapperStyle}>
         {image && (
           <CreativeEditor
-            style={cesdkStyle}
-            config={config}
-            configure={configure}
-          />
+          style={cesdkStyle}
+          config={config}
+          configure={configure}
+          image={image}
+        />
         )}
       </div>
     </div>
