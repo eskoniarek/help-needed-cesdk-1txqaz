@@ -1,4 +1,5 @@
 import CreativeEditorSDK, { Configuration } from '@cesdk/cesdk-js';
+import React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 interface CreativeEditorProps extends React.HTMLAttributes<HTMLDivElement> {
