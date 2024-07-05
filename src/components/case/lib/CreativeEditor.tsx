@@ -5,23 +5,26 @@ interface CreativeEditorProps extends React.HTMLAttributes<HTMLDivElement> {
   config?: Partial<Configuration>;
   configure?: (instance: CreativeEditorSDK) => Promise<void>;
   onInstanceChange?: (instance: CreativeEditorSDK | undefined) => void;
+  image: any;
 }
 
 export default function CreativeEditor({
-  config = undefined,
+  config = {},
   configure = undefined,
   onInstanceChange = undefined,
+  image,
   ...rest
 }: CreativeEditorProps) {
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
     let container = containerRef.current;
     let instance: CreativeEditorSDK | null = null;
-    let removed = false;
-    CreativeEditorSDK.create(container, config ?? {}).then(
+    let removed = false;  
+
+    CreativeEditorSDK.create(container, config).then(
       async (_instance) => {
         if (removed) {
           _instance.dispose();
@@ -35,9 +38,14 @@ export default function CreativeEditor({
         if (onInstanceChange) {
           onInstanceChange(instance);
         }
+
+        // Create a new scene
+        const scene = instance.engine.scene.createFromImage(image.full);
+
       }
-    );
-    const cleanup = () => {
+    );  
+
+    return () => {
       removed = true;
       instance?.dispose();
       instance = null;
@@ -45,8 +53,7 @@ export default function CreativeEditor({
         onInstanceChange(undefined);
       }
     };
-    return cleanup;
-  }, [containerRef, config, configure, onInstanceChange]);
+  }, [config, configure, onInstanceChange, image]);
 
   return <div ref={containerRef} {...rest}></div>;
 }
